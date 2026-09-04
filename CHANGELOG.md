@@ -11,6 +11,15 @@ frontend as a Nuxt layer under its own Python package.
 
 ## [Unreleased]
 
+### Added
+
+- Backend error tracking via the Sentry protocol (self-hosted GlitchTip
+  compatible): set `SENTRY_DSN` in the environment (never committed) to
+  enable; unset by default, never raises, PII never attached
+  (`send_default_pii=False`). GDPR clinics need a DPA before pointing
+  this at a cloud backend (breadcrumbs/URLs can carry identifiers) —
+  self-hosted GlitchTip otherwise.
+
 ## [2.6.0] - 2026-09-07
 
 ### Added
