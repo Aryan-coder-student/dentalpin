@@ -125,6 +125,14 @@ La tarjeta de resumen lleva preferencias por paciente y canal: canal
 preferido (email, WhatsApp o SMS), interruptor de SMS (solo se envía
 con opt-in) e idioma. `do_not_contact` prevalece sobre todo.
 
+## Grupos
+
+La tarjeta de **Grupos** lista las etiquetas locales asignadas al
+paciente (p. ej. *vip*, *riesgo-recall*). Con
+`patient_segments.write` puedes asignar grupos existentes, crear
+nuevos sobre la marcha o quitarlos. Los grupos son solo etiquetas —
+sin puntos ni caducidad.
+
 ## Permisos
 
 | Lo que ves / puedes hacer | Permiso |

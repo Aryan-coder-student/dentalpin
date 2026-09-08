@@ -124,6 +124,14 @@ channel (email, WhatsApp or SMS), an SMS opt-in toggle (SMS sends only
 when enabled), and the UI language. `do_not_contact` overrides
 everything.
 
+## Groups
+
+The **Groups** card lists the clinic-local tags assigned to the
+patient (e.g. *vip*, *recall-risk*). With
+`patient_segments.write` you can assign existing groups, create new
+ones inline, or remove them. Groups are labels only — no points, no
+expiry.
+
 ## Permissions
 
 | You see / can do | Permission |
