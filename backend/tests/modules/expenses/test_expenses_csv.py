@@ -46,10 +46,11 @@ def test_validate_rejects_missing_header_and_bad_encoding() -> None:
 
 
 def test_validate_sniffs_semicolon_and_spanish_dates() -> None:
-    csv_text = b"category;amount;expense_date\nrent;1200.00;01/08/2026\n"
+    csv_text = b"category;amount;expense_date\nrent;1200,50;01/08/2026\n"
     valid, errors, total = validate_expense_csv(csv_text)
     assert total == 1 and not errors
     assert str(valid[0].expense_date) == "2026-08-01"
+    assert valid[0].amount == Decimal("1200.50")
 
 
 @pytest.mark.asyncio

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(#431 review): CSV `amount` accepts the decimal comma (`1200,50`),
+  matching the `;` sniffing for Spanish Excel exports.
 - fix(#431 review round 3): oversize-upload 422 test mirrored from
   patients (expenses `read_upload_limited` path now covered).
 - fix(#431 review): all-or-nothing bulk commit for CSV import;

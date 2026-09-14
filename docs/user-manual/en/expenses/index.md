@@ -30,7 +30,7 @@ curl -X POST "https://clinic/api/v1/expenses/import.csv?dry_run=false" \
 ```
 
 Columns: `category*` (rent|utilities|salaries|supplies|equipment|
-insurance|maintenance|other), `amount*` (decimal > 0),
+insurance|maintenance|other), `amount*` (decimal > 0, `.` or `,`),
 `expense_date*` (YYYY-MM-DD or DD/MM/YYYY), `description`.
 Delimiter `,` or `;` (auto-detected), UTF-8, max 1000 rows / 1 MiB.
 Commit is all-or-nothing. Report shape: `{total, valid, created,

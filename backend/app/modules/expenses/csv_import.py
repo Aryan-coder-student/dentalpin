@@ -6,6 +6,8 @@ Column contract (header row required; unknown columns ignored):
     maintenance|other), amount* (decimal > 0), expense_date* (YYYY-MM-DD
     or DD/MM/YYYY), description
 
+Decimal comma in ``amount`` (``1200,50``) is accepted alongside the dot.
+
 Delimiter is sniffed (`,` or `;`, comma fallback for Spanish Excel).
 ``*`` required. Validation reuses ``ExpenseCreate`` itself, so the import
 can never admit a row the API would reject. Caps: 1000 rows, 1 MiB.
@@ -110,6 +112,9 @@ def validate_expense_csv(content: bytes) -> tuple[list[ExpenseCreate], list[dict
             data = {k: v for k, v in data.items() if v != ""}
             if "expense_date" in data:
                 data["expense_date"] = _parse_date(data["expense_date"], line_number)
+            amount = data.get("amount", "")
+            if "," in amount and "." not in amount:
+                data["amount"] = amount.replace(",", ".")  # Spanish Excel: 1200,50
             valid.append(ExpenseCreate.model_validate(data))
         except ValidationError as exc:
             first = exc.errors()[0]

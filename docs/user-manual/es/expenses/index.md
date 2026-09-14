@@ -31,7 +31,7 @@ curl -X POST "https://clinica/api/v1/expenses/import.csv?dry_run=false" \
 ```
 
 Columnas: `category*` (rent|utilities|salaries|supplies|equipment|
-insurance|maintenance|other), `amount*` (decimal > 0),
+insurance|maintenance|other), `amount*` (decimal > 0, con `.` o `,`),
 `expense_date*` (AAAA-MM-DD o DD/MM/AAAA), `description`.
 Separador `,` o `;` (autodetectado), UTF-8, máximo 1000 filas /
 1 MiB. La confirmación es todo o nada. Respuesta: `{total, valid,
