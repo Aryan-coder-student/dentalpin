@@ -35,6 +35,13 @@
     "menu": "Menu",
     "openMenu": "Abrir menu",
     "close": "Fechar",
+    "sections": {
+      "clinical": "Clínico",
+      "lab": "Laboratório",
+      "financials": "Finanças",
+      "inventory": "Inventário",
+      "practice": "Gestão"
+    },
     "toggleSidebar": "Alternar barra lateral",
     "documents": "Documentos"
   },
@@ -1190,6 +1197,8 @@
       "title": "Módulos",
       "subtitle": "Instale, desinstale e atualize os módulos da clínica.",
       "description": "Faça a gestão dos módulos ativos na sua clínica.",
+      "searchPlaceholder": "Pesquisar módulos…",
+      "filterState": "Estado",
       "deps": "Dependências",
       "noDeps": "Sem dependências",
       "state": {

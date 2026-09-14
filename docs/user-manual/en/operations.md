@@ -225,8 +225,18 @@ docker compose exec -T db psql -U dental -d dental_clinic \
 The schema must already exist (reinstall the module first, then
 restore data).
 
-For full-database backups use your usual Postgres workflow (pg_dump,
-point-in-time restore, etc.) — the module system does not replace it.
+### Full backup (database + files)
+
+```bash
+docker compose exec -T backend python -m app.cli db backup
+```
+
+Produces `full_<timestamp>.dump` (whole database) and
+`storage_<timestamp>.tar.gz` (documents, X-rays, imports) under
+`storage/backups/`. Schedule this nightly and copy the files off the
+server: a backup on the same disk is not a backup. Full restore,
+hardware-migration, and monthly-verification procedure:
+`docs/workflows/backup-restore.md`.
 
 ---
 
@@ -358,6 +368,11 @@ access needed. Open **Settings → Modules** (`/settings/modules`).
   (`installed`, `uninstalled`, `to_install`, `to_upgrade`,
   `to_remove`, `disabled`, `error`), version, category badge
   (official/community), dependencies and summary.
+- **Find & paginate:** the list has a search box and a state filter
+  (installed / uninstalled / pending / disabled / error), showing
+  twenty modules per page. The query (`?q=…`, `?states=…`, `?page=…`)
+  is synced to the URL, so a filtered view can be bookmarked or
+  linked.
 - **Install:** offered for uninstalled, installable modules present on
   disk. The confirmation modal previews the transitive dependency
   chain that will be scheduled.
