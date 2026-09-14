@@ -19,8 +19,8 @@ gov.br/nfse; Receita Federal's 2026 guidance; ANS's TISS componentes
 (Organizacional 202607, Conteúdo e Estrutura 202511, and the
 Comunicação XSD/WSDL bundle, downloaded and inspected); the CFO and
 CFM act repositories; the SBIS certification manual; LGPD and
-Resolução CD/ANPD 15/2024. Every claim is quoted with its URL in
-`SOURCES.md`. Points not confirmed from those are marked **open**.
+Resolução CD/ANPD 15/2024. Every claim is quoted, with its URL in
+the References. Points not confirmed from those are marked **open**.
 
 Brazil inverts the question that decided Portugal, France and
 Germany. **Nobody certifies the software** — not for invoicing, not
@@ -532,8 +532,7 @@ relevance triggers at once: sensitive data and professional secrecy.
   certification question answered the other way), ADR 0028 (France),
   ADR 0031 (Germany — the catalog-in-module precedent), ADR 0002
   (per-module Alembic branches)
-- `adr-br/SOURCES.md` — every URL with the sentence it supports,
-  fetched 2026-09-12
+- All sources fetched 2026-09-12.
 - CF art. 156: <https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm>;
   LC 116/2003: <https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp116.htm>;
   LC 214/2025: <https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm>
@@ -549,7 +548,7 @@ relevance triggers at once: sensitive data and professional secrecy.
   RFB Orientações 2026: <https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/orientacoes-2026>
 - Padrão TISS: <https://www.gov.br/ans/pt-br/assuntos/prestadores/padrao-para-troca-de-informacao-de-saude-suplementar-2013-tiss>;
   Componente Organizacional 202607, Conteúdo e Estrutura 202511 and
-  Comunicação (XSD/WSDL) — exact URLs in `SOURCES.md` §11;
+  Comunicação (XSD/WSDL) — downloaded from the Padrão TISS page above;
   histórico de versões: <https://www.gov.br/ans/pt-br/assuntos/prestadores/padrao-para-troca-de-informacao-de-saude-suplementar-2013-tiss/padrao-tiss-historico-das-versoes-dos-componentes-do-padrao-tiss>;
   Rol: <https://www.gov.br/ans/pt-br/acesso-a-informacao/participacao-da-sociedade/atualizacao-do-rol-de-procedimentos>
 - CEO (Res. CFO-118/2012): <https://website.cfo.org.br/wp-content/uploads/2018/03/codigo_etica.pdf>;
