@@ -41,6 +41,7 @@ const route = useRoute()
 const router = useRouter()
 
 const PAGE_SIZE = 20
+const SEARCH_DEBOUNCE = 300
 const isSyncingFromUrl = ref(false)
 
 const STATE_KEYS: ModuleState[] = [
@@ -101,11 +102,11 @@ watch([filteredModules, page], () => {
   }
 })
 
-// Track whether the next page change is caused by a search/filter reset
-// (so we use router.replace instead of router.push — see pushPage/pushUrl).
+// Search/filter changes replace the URL entry; paging pushes one so the
+// browser Back button walks pages.
 let fromSearchOrFilterReset = false
 
-function pushUrl() {
+function pushUrl(mode: 'replace' | 'push' = 'replace') {
   const next = { ...route.query }
   delete next.q
   delete next.states
@@ -126,38 +127,25 @@ function pushUrl() {
       break
     }
   }
-  if (changed) router.replace({ query: next })
+  if (changed) router[mode]({ query: next })
 }
 
-function pushPage() {
-  const next = { ...route.query }
-  delete next.q
-  delete next.states
-  delete next.page
-  const q = search.value.trim()
-  if (q) next.q = q
-  if (stateFilter.value.length) next.states = stateFilter.value.join(',')
-  if (page.value > 1) next.page = String(page.value)
-
-  const cur = route.query
-  let changed = false
-  const allKeys = new Set([...Object.keys(cur), ...Object.keys(next)])
-  for (const key of allKeys) {
-    const a = next[key] ?? ''
-    const b = (Array.isArray(cur[key]) ? (cur[key] as string[]).join(',') : (cur[key] as string)) ?? ''
-    if (a !== b) {
-      changed = true
-      break
-    }
-  }
-  if (changed) router.push({ query: next })
-}
-
-// Reset page to 1 on search input, but skip if updating from URL back/forward navigation
+// Debounced: reset to page 1 and sync the URL once typing pauses. Skipped
+// while restoring state from the URL (back/forward).
+let searchTimer: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (isSyncingFromUrl.value) return
-  fromSearchOrFilterReset = true
-  page.value = 1
+  if (searchTimer) clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    searchTimer = null
+    fromSearchOrFilterReset = true
+    page.value = 1
+    pushUrl() // no-op when the page watcher already pushed
+    fromSearchOrFilterReset = false
+  }, SEARCH_DEBOUNCE)
+})
+onBeforeUnmount(() => {
+  if (searchTimer) clearTimeout(searchTimer)
 })
 
 // Reset page to 1 and update URL on filter change
@@ -174,7 +162,7 @@ watch(page, () => {
       pushUrl()
       fromSearchOrFilterReset = false
     } else {
-      pushPage()
+      pushUrl('push')
     }
   }
 })
@@ -186,7 +174,9 @@ watch(
     isSyncingFromUrl.value = true
 
     const parsedSearch = String(q.q ?? '')
-    if (parsedSearch !== search.value) search.value = parsedSearch
+    // Skip while a debounced push is pending: the URL still holds the
+    // previous value and would clobber what the user is typing.
+    if (!searchTimer && parsedSearch !== search.value) search.value = parsedSearch
 
     const parsedStates = typeof q.states === 'string' ? q.states.split(',').filter(Boolean) : []
     if (JSON.stringify(parsedStates) !== JSON.stringify(stateFilter.value)) {
