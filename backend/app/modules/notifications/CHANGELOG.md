@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+- fix(#63 maintainer review): `notif_0008` seeds system push templates
+  (title + body, es/en, one per notification type, `smg_0002` shape) —
+  without a `channel='push'` row every template-kind push failed at
+  dispatch with "empty body"; manual send (`POST /send`) accepts
+  `channels: ["push"]` (the recipient pre-check knew only phone/email);
+  `test_clinic_channels_sms_fallback_order` pins VAPID unset so a
+  configured runner no longer appends `push` to the expected order.
 - fix(#63 review round 3): dropped the `ImportError` fallback (plain
   top-level `webpush` import, no runtime branch); `_fit_payload`
   re-serialises with `ensure_ascii=False` (accented bodies stay under

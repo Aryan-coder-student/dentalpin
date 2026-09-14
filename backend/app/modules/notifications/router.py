@@ -534,11 +534,13 @@ async def send_notification(
 
     if data.channels:
         # Recipient per requested channel: phone for WhatsApp/SMS, email
-        # for email. A phone-only patient must not 400 on a WhatsApp/SMS
-        # send (issue #392 review).
+        # for email, the patient itself for push (the gateway checks the
+        # subscriptions). A phone-only patient must not 400 on a
+        # WhatsApp/SMS send (issue #392 review).
         has_recipient = any(
             (channel in ("whatsapp", "sms") and patient is not None and patient.phone)
             or (channel == "email" and patient_email)
+            or (channel == "push" and patient is not None)
             for channel in data.channels
         )
         if not has_recipient:
