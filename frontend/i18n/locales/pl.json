@@ -35,6 +35,13 @@
     "menu": "Menu",
     "openMenu": "Otwórz menu",
     "close": "Zamknij",
+    "sections": {
+      "clinical": "Kliniczne",
+      "lab": "Lab",
+      "financials": "Finanse",
+      "inventory": "Magazyn",
+      "practice": "Gabinet"
+    },
     "toggleSidebar": "Przełącz pasek boczny",
     "documents": "Dokumenty"
   },
@@ -1190,6 +1197,8 @@
       "title": "Moduły",
       "subtitle": "Instaluj, odinstalowuj i aktualizuj moduły gabinetu.",
       "description": "Zarządzaj modułami aktywnymi w Twoim gabinecie.",
+      "searchPlaceholder": "Szukaj modułów…",
+      "filterState": "Stan",
       "deps": "Zależności",
       "noDeps": "Brak zależności",
       "state": {

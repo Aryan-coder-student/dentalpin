@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- refactor(#332): resolve LLM providers through a process-wide registry;
+  Copilot registers the existing OpenAI and Anthropic specifications from
+  `on_activate()` so only an installed module affects runtime. Settings and
+  the bridge now read default models, API-key requirements and tool dialects
+  from the registered specification instead of provider-name branches.
+
+- feat(#46): history scoping, nudge visibility, and agent-context grant sets
+  resolve flag-aware (`RBAC_FROM_DB` on: custom roles and per-clinic
+  overrides apply to chat, digest, pendientes, and tool calls).
+
 - feat(#343): morning-digest subject line localized for all 9 communication languages (was es/en with es fallback).
 
 - feat(#332): Anthropic joins OpenAI as a live LLM provider — per-clinic `copilot_settings.provider = "anthropic"` streams chat turns through `AnthropicProvider` (`app/core/llm/anthropic_provider.py`). The bridge now passes the provider-matching tool-schema dialect to the orchestrator, settings-save rejects `anthropic` when `ANTHROPIC_API_KEY` is missing, and switching provider without naming a model falls back to that provider's default (`COPILOT_MODEL_CHAT_ANTHROPIC`).
