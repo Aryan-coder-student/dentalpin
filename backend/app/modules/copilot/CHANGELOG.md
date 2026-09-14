@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(#452): the chat stream refreshes the session once and replays the turn when the first response is a 401; a failed refresh shows `copilot.sessionExpired` (all locales) and ends the session instead of dropping `HTTP 401` into the chat.
+
 - feat(#46): history scoping, nudge visibility, and agent-context grant sets
   resolve flag-aware (`RBAC_FROM_DB` on: custom roles and per-clinic
   overrides apply to chat, digest, pendientes, and tool calls).
