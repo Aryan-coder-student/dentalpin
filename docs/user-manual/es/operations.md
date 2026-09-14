@@ -232,9 +232,19 @@ docker compose exec -T db psql -U dental -d dental_clinic \
 El esquema debe existir previamente (reinstala primero el módulo y
 después restaura los datos).
 
-Para copias de la base de datos completa usa tu flujo habitual de
-Postgres (pg_dump, restauración a un punto en el tiempo, etc.) — el
-sistema de módulos no lo sustituye.
+### Copia completa (base de datos + archivos)
+
+```bash
+docker compose exec -T backend python -m app.cli db backup
+```
+
+Genera `full_<fecha>.dump` (toda la base de datos) y
+`storage_<fecha>.tar.gz` (documentos, radiografías, importaciones) en
+`storage/backups/`. Programa este comando cada noche y copia los
+archivos fuera del servidor: una copia en el mismo disco no es una
+copia de seguridad. Procedimiento completo de restauración,
+migración de hardware y verificación mensual: la guía
+`docs/workflows/backup-restore.md`.
 
 ---
 
@@ -371,6 +381,11 @@ administración — sin necesidad de acceso a la terminal. Abre
   (`installed`, `uninstalled`, `to_install`, `to_upgrade`,
   `to_remove`, `disabled`, `error`), versión, insignia de categoría
   (oficial/comunitario), dependencias y resumen.
+- **Buscar y paginar:** la lista tiene un buscador y un filtro por
+  estado (instalado / desinstalado / pendiente / deshabilitado /
+  error), y muestra veinte módulos por página. La consulta
+  (`?q=…`, `?states=…`, `?page=…`) está sincronizada con la URL, por lo
+  que una vista filtrada puede guardarse en marcadores o enlazarse.
 - **Instalar:** disponible para módulos desinstalados e instalables
   presentes en disco. El modal de confirmación muestra la cadena
   transitiva de dependencias que se programará.
