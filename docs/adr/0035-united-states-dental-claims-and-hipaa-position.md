@@ -16,7 +16,7 @@ Sources are the primary texts: 45 CFR Parts 160/162/164/171 and 42 CFR
 21 CFR 1300/1311, Federal Register 90 FR 898, 91 FR 14350, 85 FR 84472
 and 89 FR 97710, the CMS Administrative Simplification and EPCS pages,
 healthit.gov, and the licensing pages of the two copyright holders —
-X12 and the ADA. Every quote below is in `SOURCES.md` with its URL.
+X12 and the ADA. Every quote below has its URL in the References.
 Anything unconfirmed from an official source is marked **open**.
 
 The headline is that the United States is the opposite of Portugal
@@ -465,7 +465,7 @@ since 27 March 2016.
 
 ## Readiness matrix row
 
-| United States | ✅ `en` | ✅ | ✅ patient invoicing works as-is | ❌ Claims: no US regulator certifies dental PMS — the blocker is IP, not approval. DentalPin ships no CDT (ADA commercial licence; the practice supplies its own) and writes no X12 837D (X12's licence forbids Open Source licensing of the combined software, and ADR 0004 converts to Apache 2.0); `us_claims` sends a non-standard payload to a clearinghouse acting as the practice's business associate (45 CFR 162.930(b); ADR 0035). HIPAA: self-hosted means DentalPin is no business associate and signs no BAA; the hosted offer is one and does. Read-access logging, automatic logoff and emergency access are open before any readiness claim | #137 |
+| United States | ✅ `en` | ✅ | ✅ patient invoicing works as-is | ❌ Claims: no US regulator certifies dental PMS — the blocker is IP, not approval. DentalPin ships no CDT (ADA commercial licence; the practice supplies its own) and writes no X12 837D (X12's licence forbids Open Source licensing of the combined software, and ADR 0004 converts to Apache 2.0); `us_claims` sends a non-standard payload to a clearinghouse acting as the practice's business associate (45 CFR 162.930(b); ADR 0035). HIPAA: self-hosted means DentalPin is no business associate and signs no BAA; the hosted offer is one and does. Read-access logging, automatic logoff and emergency access are open before any readiness claim | #137 (answered) |
 
 ## References
 
@@ -474,8 +474,8 @@ since 27 March 2016.
   `docs/technical/compliance-posture.md`;
   `docs/technical/activity_journal/overview.md`; ADRs 0004, 0022, 0023,
   0024, 0027, 0028, 0031
-- **`SOURCES.md` carries every verbatim quote with its URL and fetch
-  date; the list below is the shortest path back to each text.**
+- All sources fetched 2026-09-10 to 2026-09-12; the list below is the
+  shortest path back to each text.
 - 45 CFR 160/162/164/171 and 16 CFR 318 on the eCFR, e.g.
   <https://www.ecfr.gov/current/title-45/section-162.1102>,
   `…/section-162.920`, `…/section-162.923`, `…/section-162.930`,
@@ -493,6 +493,8 @@ since 27 March 2016.
 - X12: <https://x12.org/products/ip-use>,
   <https://ecommerce.x12.org/terms-policies-licenses>,
   <https://x12.org/products/licensing-program>
-- ADA: <https://www.ada.org/publications/ada-store-products/licensing-for-commercial-users>
+- ADA: <https://www.ada.org/publications/ada-store-products/licensing-for-commercial-users>;
+  practice-use statement ("do not need a license", "within practice
+  management software"): <https://adanews.ada.org/ada-news/2023/may/cdt-is-ada-intellectual-property-source-of-revenue-for-association/>
 - healthit.gov certification programme overview; 42 CFR 414.1305;
   21 CFR 1300.01, 1311.115, 1311.300; NY DOH e-prescribing
