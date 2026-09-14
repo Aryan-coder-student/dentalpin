@@ -41,8 +41,7 @@ export function useDocuments() {
             page_size: pageSize,
             document_type: documentType,
             media_kind: mediaKind
-          },
-          errorToast: false
+          }
         }
       )
 
@@ -103,7 +102,10 @@ export function useDocuments() {
         response = await send()
       } catch (error: unknown) {
         if ((error as { statusCode?: number })?.statusCode !== 401) throw error
-        if (!(await auth.refresh())) throw error
+        if (!(await auth.refresh())) {
+          await auth.logout()
+          throw error
+        }
         response = await send()
       }
 
@@ -176,7 +178,7 @@ export function useDocuments() {
 
   async function deleteDocument(documentId: string): Promise<boolean> {
     try {
-      await api.del(`/api/v1/media/documents/${documentId}`, { errorToast: false })
+      await api.del(`/api/v1/media/documents/${documentId}`)
 
       // Remove from local list
       documents.value = documents.value.filter(d => d.id !== documentId)
@@ -201,8 +203,7 @@ export function useDocuments() {
     try {
       const response = await api.put<ApiResponse<Document>>(
         `/api/v1/media/documents/${documentId}`,
-        data,
-        { errorToast: false }
+        data
       )
 
       // Update local list

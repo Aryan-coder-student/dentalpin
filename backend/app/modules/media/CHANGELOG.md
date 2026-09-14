@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- fix(#452): the document list, delete and update go through `useApi` (401 → refresh → retry, CSRF, SSR cookies); the upload stays on `$fetch` for FormData/progress and retries once after `auth.refresh()` on 401, ending the session when the refresh fails.
+
 - fix(#431 review round 3): `unarchive_patient_documents` docstring
   says every archived document is restored (matches the query).
 - fix(#431 review): `patient.restored` handler reverses the document
