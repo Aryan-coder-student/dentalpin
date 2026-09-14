@@ -4,7 +4,9 @@
 
 - refactor(#332): resolve LLM providers through a process-wide registry;
   Copilot registers the existing OpenAI and Anthropic specifications from
-  `on_activate()` so only an installed module affects runtime.
+  `on_activate()` so only an installed module affects runtime. Settings and
+  the bridge now read default models, API-key requirements and tool dialects
+  from the registered specification instead of provider-name branches.
 
 - feat(#343): morning-digest subject line localized for all 9 communication languages (was es/en with es fallback).
 

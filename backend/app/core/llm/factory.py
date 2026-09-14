@@ -11,36 +11,50 @@ from app.core.llm.spec import ProviderConfig, ProviderSpec
 def _create_openai(config: ProviderConfig) -> Provider:
     from app.core.llm.openai_provider import OpenAIProvider
 
-    return OpenAIProvider(api_key=config.api_key or settings.OPENAI_API_KEY)
+    return OpenAIProvider(api_key=config.api_key or "")
 
 
 def _create_anthropic(config: ProviderConfig) -> Provider:
     from app.core.llm.anthropic_provider import AnthropicProvider
 
-    return AnthropicProvider(api_key=config.api_key or settings.ANTHROPIC_API_KEY)
+    return AnthropicProvider(api_key=config.api_key or "")
 
 
 OPENAI_SPEC = ProviderSpec(
     name="openai",
     label="OpenAI",
-    tier="paid",
     default_model=settings.COPILOT_MODEL_CHAT_OPENAI,
-    supports_tools=True,
-    redaction_required=True,
+    tool_dialect="openai",
     needs_api_key=True,
+    api_key_setting="OPENAI_API_KEY",
     factory=_create_openai,
 )
 
 ANTHROPIC_SPEC = ProviderSpec(
     name="anthropic",
     label="Anthropic",
-    tier="paid",
     default_model=settings.COPILOT_MODEL_CHAT_ANTHROPIC,
-    supports_tools=True,
-    redaction_required=True,
+    tool_dialect="anthropic",
     needs_api_key=True,
+    api_key_setting="ANTHROPIC_API_KEY",
     factory=_create_anthropic,
 )
+
+
+def get_provider_spec(name: str) -> ProviderSpec:
+    """Return the registered specification for ``name``."""
+    spec = llm_provider_registry.get(name)
+    if spec is None:
+        supported = ", ".join(item.name for item in llm_provider_registry.list()) or "none"
+        raise LLMConfigError(f"Unsupported LLM provider: {name!r} (supported: {supported})")
+    return spec
+
+
+def get_configured_api_key(spec: ProviderSpec) -> str | None:
+    """Return the deployment-level API key configured for ``spec``."""
+    if spec.api_key_setting is None:
+        return None
+    return getattr(settings, spec.api_key_setting)
 
 
 def get_provider(name: str, *, api_key: str | None = None) -> Provider:
@@ -49,9 +63,7 @@ def get_provider(name: str, *, api_key: str | None = None) -> Provider:
     Raises :class:`LLMConfigError` for unsupported names so a clinic can
     never select a provider this deployment cannot serve.
     """
-    spec = llm_provider_registry.get(name)
-    if spec is None:
-        supported = ", ".join(item.name for item in llm_provider_registry.list()) or "none"
-        raise LLMConfigError(f"Unsupported LLM provider: {name!r} (supported: {supported})")
+    spec = get_provider_spec(name)
+    resolved_api_key = api_key or get_configured_api_key(spec)
 
-    return spec.factory(ProviderConfig(api_key=api_key))
+    return spec.factory(ProviderConfig(api_key=resolved_api_key))

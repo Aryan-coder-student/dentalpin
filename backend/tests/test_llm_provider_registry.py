@@ -5,6 +5,9 @@ from __future__ import annotations
 from collections.abc import AsyncIterator
 from dataclasses import replace
 
+import pytest
+
+from app.config import settings
 from app.core.llm.base import ProviderEvent
 from app.core.llm.factory import ANTHROPIC_SPEC, OPENAI_SPEC, get_provider
 from app.core.llm.registry import ProviderRegistry, llm_provider_registry
@@ -33,11 +36,10 @@ def _spec(name: str = "fake") -> ProviderSpec:
     return ProviderSpec(
         name=name,
         label="Fake",
-        tier="free",
         default_model="fake-model",
-        supports_tools=True,
-        redaction_required=True,
+        tool_dialect="openai",
         needs_api_key=False,
+        api_key_setting=None,
         factory=_FakeProvider,
     )
 
@@ -77,7 +79,16 @@ def test_registry_registration_overrides_different_spec() -> None:
     assert registry.list() == [override]
 
 
+def test_provider_spec_requires_key_setting_when_key_is_needed() -> None:
+    with pytest.raises(ValueError, match="api_key_setting is missing"):
+        replace(_spec(), needs_api_key=True)
+
+
 def test_copilot_activation_registers_builtin_providers() -> None:
+    previous_specs = {
+        "openai": llm_provider_registry.get("openai"),
+        "anthropic": llm_provider_registry.get("anthropic"),
+    }
     llm_provider_registry.unregister("openai")
     llm_provider_registry.unregister("anthropic")
 
@@ -95,6 +106,9 @@ def test_copilot_activation_registers_builtin_providers() -> None:
     finally:
         llm_provider_registry.unregister("openai")
         llm_provider_registry.unregister("anthropic")
+        for spec in previous_specs.values():
+            if spec is not None:
+                llm_provider_registry.register(spec)
 
 
 def test_factory_resolves_registered_provider() -> None:
@@ -107,11 +121,10 @@ def test_factory_resolves_registered_provider() -> None:
     spec = ProviderSpec(
         name="test-provider",
         label="Test Provider",
-        tier="free",
         default_model="test-model",
-        supports_tools=True,
-        redaction_required=True,
+        tool_dialect="openai",
         needs_api_key=True,
+        api_key_setting="OPENAI_API_KEY",
         factory=factory,
     )
     llm_provider_registry.register(spec)
@@ -122,3 +135,20 @@ def test_factory_resolves_registered_provider() -> None:
         assert captured == [ProviderConfig(api_key="secret")]
     finally:
         llm_provider_registry.unregister("test-provider")
+
+
+def test_factory_reads_deployment_key_named_by_spec(monkeypatch) -> None:
+    spec = replace(
+        _spec("deployment-key-provider"),
+        needs_api_key=True,
+        api_key_setting="OPENAI_API_KEY",
+    )
+    monkeypatch.setattr(settings, "OPENAI_API_KEY", "deployment-key")
+    llm_provider_registry.register(spec)
+
+    try:
+        provider = get_provider(spec.name)
+        assert isinstance(provider, _FakeProvider)
+        assert provider.config == ProviderConfig(api_key="deployment-key")
+    finally:
+        llm_provider_registry.unregister(spec.name)

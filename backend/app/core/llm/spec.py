@@ -23,9 +23,14 @@ class ProviderSpec:
 
     name: str
     label: str
-    tier: Literal["paid", "free", "local"]
     default_model: str
-    supports_tools: bool
-    redaction_required: bool
+    tool_dialect: Literal["openai", "anthropic"]
     needs_api_key: bool
+    api_key_setting: str | None
     factory: Callable[[ProviderConfig], Provider]
+
+    def __post_init__(self) -> None:
+        if self.needs_api_key and not self.api_key_setting:
+            raise ValueError(
+                f"Provider {self.name!r} needs an API key but api_key_setting is missing"
+            )
