@@ -35,6 +35,13 @@
     "menu": "Menu",
     "openMenu": "Ouvrir le menu",
     "close": "Fermer",
+    "sections": {
+      "clinical": "Clinique",
+      "lab": "Labo",
+      "financials": "Finances",
+      "inventory": "Inventaire",
+      "practice": "Cabinet"
+    },
     "toggleSidebar": "Basculer la barre latérale",
     "documents": "Documents"
   },
@@ -1190,6 +1197,8 @@
       "title": "Modules",
       "subtitle": "Installer, désinstaller et mettre à jour les modules de la clinique.",
       "description": "Gérez les modules actifs dans votre clinique.",
+      "searchPlaceholder": "Rechercher des modules…",
+      "filterState": "État",
       "deps": "Dépendances",
       "noDeps": "Aucune dépendance",
       "state": {
