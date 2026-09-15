@@ -31,11 +31,12 @@ export function usePatientSegments(patientId: Ref<string> | ComputedRef<string>)
     }
   }
 
-  async function createSegment(name: string) {
+  async function createSegment(name: string): Promise<PatientSegment> {
     isSaving.value = true
     try {
-      await api.post<ApiResponse<PatientSegment>>('/api/v1/patient_segments/segments', { name })
-      await fetchAll()
+      const res = await api.post<ApiResponse<PatientSegment>>('/api/v1/patient_segments/segments', { name })
+      allSegments.value = [...allSegments.value, res.data]
+      return res.data
     } finally {
       isSaving.value = false
     }

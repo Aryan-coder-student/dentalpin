@@ -5,6 +5,7 @@
  * Registered into `patient.summary.cards` by patient_segments. Chips of
  * the patient's segments with remove, an add-row (existing segments
  * dropdown + inline create), all gated on `patient_segments.write`.
+ * Uses the host `SummaryCard` shell like every other summary card.
  */
 import type { PatientExtended } from '~~/app/types'
 import { PERMISSIONS } from '~~/app/config/permissions'
@@ -19,105 +20,127 @@ const { t } = useI18n()
 const { can } = usePermissions()
 const canWrite = computed(() => can(PERMISSIONS.patientSegments.write))
 const patientId = computed(() => props.ctx.patient.id)
-const { segments, allSegments, isLoading, fetchAll, createSegment, assignSegment, removeSegment }
+const { segments, allSegments, isLoading, isSaving, fetchAll, createSegment, assignSegment, removeSegment }
   = usePatientSegments(patientId)
 
 onMounted(fetchAll)
 
 const showAdd = ref(false)
 const newName = ref('')
+// null, never '' — an empty string value breaks reka-ui's select.
+const picked = ref<{ label: string, value: string } | null>(null)
 
 const unassigned = computed(() => {
   const mine = new Set(segments.value.map(s => s.id))
-  return allSegments.value.filter(s => !mine.has(s.id))
+  return allSegments.value
+    .filter(s => !mine.has(s.id))
+    .map(s => ({ label: s.name, value: s.id }))
 })
 
-async function addExisting(id: string) {
-  await assignSegment(id)
+async function addExisting(opt: { label: string, value: string } | null) {
+  if (!opt) return
+  await assignSegment(opt.value)
+  picked.value = null
 }
 
 async function createAndAssign() {
   const name = newName.value.trim()
   if (!name) return
-  await createSegment(name)
-  const created = allSegments.value.find(s => s.name === name)
-  if (created) await assignSegment(created.id)
+  const created = await createSegment(name)
+  await assignSegment(created.id)
   newName.value = ''
   showAdd.value = false
 }
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-2">
-      <h3 class="font-semibold">
-        {{ t('patientSegments.title') }}
-      </h3>
+  <SummaryCard
+    :title="t('patientSegments.title')"
+    icon="i-lucide-tags"
+    severity="neutral"
+    :loading="isLoading"
+    :empty="segments.length === 0 && !showAdd"
+  >
+    <template
+      v-if="canWrite"
+      #header-trailing
+    >
       <UButton
-        v-if="canWrite"
         icon="i-lucide-plus"
         size="xs"
         color="neutral"
         variant="ghost"
+        class="ms-auto"
         :aria-label="t('patientSegments.add')"
         @click="showAdd = !showAdd"
       />
-    </div>
-    <USkeleton
-      v-if="isLoading"
-      class="h-6 w-32"
-    />
-    <p
-      v-else-if="segments.length === 0"
-      class="text-sm text-muted"
-    >
+    </template>
+
+    <template #empty>
       {{ t('patientSegments.emptyHint') }}
-    </p>
-    <div
-      v-else
-      class="flex flex-wrap gap-1.5"
-    >
-      <UBadge
-        v-for="segment in segments"
-        :key="segment.id"
-        :style="segment.color ? { backgroundColor: segment.color } : {}"
+    </template>
+
+    <div class="space-y-2">
+      <p
+        v-if="segments.length === 0"
+        class="text-caption text-muted"
       >
-        {{ segment.name }}
-        <UButton
-          v-if="canWrite"
-          icon="i-lucide-x"
-          size="xs"
-          color="neutral"
-          variant="ghost"
-          :aria-label="t('patientSegments.remove')"
-          @click="removeSegment(segment.id)"
-        />
-      </UBadge>
-    </div>
-    <div
-      v-if="showAdd && canWrite"
-      class="mt-2 space-y-2"
-    >
-      <USelectMenu
-        v-if="unassigned.length > 0"
-        :placeholder="t('patientSegments.pickExisting')"
-        :items="unassigned.map(s => ({ label: s.name, value: s.id }))"
-        @update:model-value="(opt: { value: string }) => addExisting(opt.value)"
-      />
-      <div class="flex gap-1.5">
-        <UInput
-          v-model="newName"
-          :placeholder="t('patientSegments.newName')"
-          class="flex-1"
-          @keyup.enter="createAndAssign"
-        />
-        <UButton
-          size="sm"
-          @click="createAndAssign"
+        {{ t('patientSegments.emptyHint') }}
+      </p>
+      <div
+        v-else
+        class="flex flex-wrap gap-1.5"
+      >
+        <UBadge
+          v-for="segment in segments"
+          :key="segment.id"
+          variant="subtle"
+          :style="segment.color ? { backgroundColor: segment.color, color: '#fff' } : {}"
         >
-          {{ t('patientSegments.create') }}
-        </UButton>
+          {{ segment.name }}
+          <UButton
+            v-if="canWrite"
+            icon="i-lucide-x"
+            size="xs"
+            color="neutral"
+            variant="ghost"
+            :aria-label="t('patientSegments.remove')"
+            @click="removeSegment(segment.id)"
+          />
+        </UBadge>
+      </div>
+
+      <div
+        v-if="showAdd && canWrite"
+        class="space-y-2"
+      >
+        <USelectMenu
+          v-if="unassigned.length > 0"
+          v-model="picked"
+          size="sm"
+          :placeholder="t('patientSegments.pickExisting')"
+          :items="unassigned"
+          :loading="isSaving"
+          @update:model-value="addExisting"
+        />
+        <div class="flex gap-1.5">
+          <UInput
+            v-model="newName"
+            size="sm"
+            :placeholder="t('patientSegments.newName')"
+            class="flex-1"
+            @keyup.enter="createAndAssign"
+          />
+          <UButton
+            size="sm"
+            :disabled="!newName.trim()"
+            :loading="isSaving"
+            @click="createAndAssign"
+          >
+            {{ t('patientSegments.create') }}
+          </UButton>
+        </div>
       </div>
     </div>
-  </div>
+  </SummaryCard>
 </template>

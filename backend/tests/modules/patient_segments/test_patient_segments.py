@@ -144,6 +144,18 @@ async def test_http_codes(client, auth_headers, test_clinic: Clinic, test_patien
     )
     assert bad.status_code == 422
 
+    blank = await client.post(
+        "/api/v1/patient_segments/segments", json={"name": "   "}, headers=auth_headers
+    )
+    assert blank.status_code == 422
+
+    bad_color = await client.post(
+        "/api/v1/patient_segments/segments",
+        json={"name": "c", "color": "red"},
+        headers=auth_headers,
+    )
+    assert bad_color.status_code == 422
+
     listed = await client.get("/api/v1/patient_segments/segments", headers=auth_headers)
     assert listed.status_code == 200
     assert [s["name"] for s in listed.json()["data"]] == ["vip"]

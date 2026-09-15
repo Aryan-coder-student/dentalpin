@@ -14,7 +14,7 @@ related_permissions:
 related_paths:
   - backend/app/modules/patients/router.py
   - backend/app/modules/patients/frontend/pages/patients/[id].vue
-last_verified_commit: 829bdd25
+last_verified_commit: 838a6767
 ---
 
 # Ficha del paciente
