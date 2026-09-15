@@ -19,6 +19,11 @@ frontend as a Nuxt layer under its own Python package.
   (`send_default_pii=False`). GDPR clinics need a DPA before pointing
   this at a cloud backend (breadcrumbs/URLs can carry identifiers) —
   self-hosted GlitchTip otherwise.
+- **Settings → Modules**: the module list now supports text search, a
+  per-state filter (installed / uninstalled / pending / disabled / error)
+  and pagination, synced to the URL so results can be linked.
+- **Auth RBAC step 4** (#46): `role_id` writes on membership/user
+  endpoints with flag-aware callers; demo seeder persists the FK.
 
 ## [2.6.0] - 2026-09-07
 
