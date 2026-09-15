@@ -27,8 +27,8 @@ onMounted(fetchAll)
 
 const showAdd = ref(false)
 const newName = ref('')
-// null, never '' — an empty string value breaks reka-ui's select.
-const picked = ref<{ label: string, value: string } | null>(null)
+// undefined (never '') — USelectMenu's v-model is T | undefined.
+const picked = ref<{ label: string, value: string } | undefined>(undefined)
 
 const unassigned = computed(() => {
   const mine = new Set(segments.value.map(s => s.id))
@@ -37,10 +37,10 @@ const unassigned = computed(() => {
     .map(s => ({ label: s.name, value: s.id }))
 })
 
-async function addExisting(opt: { label: string, value: string } | null) {
+async function addExisting(opt: { label: string, value: string } | undefined) {
   if (!opt) return
   await assignSegment(opt.value)
-  picked.value = null
+  picked.value = undefined
 }
 
 async function createAndAssign() {
