@@ -63,7 +63,7 @@ class Settings(BaseSettings):
     # populated by the seed_rbac seeder at every boot.
     RBAC_FROM_DB: bool = False
 
-# Error tracking (Sentry protocol; self-hosted GlitchTip speaks it too).
+    # Error tracking (Sentry protocol; self-hosted GlitchTip speaks it too).
     # Unset by default — the app runs without any error reporter. Set
     # SENTRY_DSN in the environment (never committed) to enable. No patient
     # data is attached: send_default_pii stays off, see setup_error_tracking.
