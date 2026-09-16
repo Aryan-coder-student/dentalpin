@@ -13,6 +13,16 @@ frontend as a Nuxt layer under its own Python package.
 
 ### Added
 
+- **Sidebar super-sections + Settings super-groups** (#232): module nav
+  items now self-place under five stable headers — `clinical`, `lab`,
+  `financials`, `inventory`, `practice` — declared via a `section` key
+  in each module's backend-driven manifest navigation; the Settings
+  rail collapses its nine flat categories into five labelled
+  super-groups (`Clinical setup`, `Clinical management`, `Financial
+  configuration`, `System & add-ons`, `My preferences`). Presentation
+  only: every route, permission and module name is unchanged. Copilot's
+  standalone sidebar entry is removed (launcher already lives in the
+  app-overlay floating button).
 - **Settings → Modules**: the module list now supports text search, a
   per-state filter (installed / uninstalled / pending / disabled / error)
   and pagination, synced to the URL so results can be linked.
