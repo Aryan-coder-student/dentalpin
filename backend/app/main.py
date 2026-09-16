@@ -57,6 +57,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     setup_error_tracking(
         dsn=settings.SENTRY_DSN,
         traces_sample_rate=settings.SENTRY_TRACES_SAMPLE_RATE,
+        environment=settings.ENVIRONMENT,
+        release=app.version,
     )
 
     # Startup — discover everything, settle DB state, then mount only what

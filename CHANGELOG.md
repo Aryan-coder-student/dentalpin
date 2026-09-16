@@ -26,9 +26,12 @@ frontend as a Nuxt layer under its own Python package.
 - Backend error tracking via the Sentry protocol (self-hosted GlitchTip
   compatible): set `SENTRY_DSN` in the environment (never committed) to
   enable; unset by default, never raises, PII never attached
-  (`send_default_pii=False`). GDPR clinics need a DPA before pointing
-  this at a cloud backend (breadcrumbs/URLs can carry identifiers) —
-  self-hosted GlitchTip otherwise.
+  (`send_default_pii=False`, query string dropped, UUID/token path
+  segments scrubbed to `[id]`). Performance tracing is a separate opt-in
+  (`SENTRY_TRACES_SAMPLE_RATE`, default `0.0`). Backend only — no DSN
+  reaches the browser. GDPR clinics need a DPA before pointing this at a
+  cloud backend — self-hosted GlitchTip otherwise
+  (`docs/technical/compliance-posture.md`).
 - **Settings → Modules**: the module list now supports text search, a
   per-state filter (installed / uninstalled / pending / disabled / error)
   and pagination, synced to the URL so results can be linked.

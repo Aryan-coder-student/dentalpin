@@ -66,9 +66,12 @@ class Settings(BaseSettings):
     # Error tracking (Sentry protocol; self-hosted GlitchTip speaks it too).
     # Unset by default — the app runs without any error reporter. Set
     # SENTRY_DSN in the environment (never committed) to enable. No patient
-    # data is attached: send_default_pii stays off, see setup_error_tracking.
+    # data is attached: send_default_pii stays off and URLs are scrubbed,
+    # see setup_error_tracking. Performance tracing is a separate opt-in
+    # (0.0 = off): spans carry SQL statement text.
     SENTRY_DSN: str = ""
-    SENTRY_TRACES_SAMPLE_RATE: float = 0.1
+    SENTRY_TRACES_SAMPLE_RATE: float = 0.0
+
     # WebPush (notifications push channel). One VAPID pair per deployment:
     # set DENTALPIN_VAPID_PRIVATE_KEY (PEM, env only) + DENTALPIN_VAPID_SUBJECT
     # (mailto contact). Unset = push channel resolves nothing.
