@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Dropped the unused `nav.copilot` locale key (sidebar entry removed in #467).
+
 - feat(#232): no standalone sidebar entry — the assistant launcher is the app-overlay floating button; manifest `navigation` is empty.
 - fix(#452): the chat stream refreshes the session once and replays the turn when the first response is a 401; a failed refresh shows `copilot.sessionExpired` (all locales) and ends the session instead of dropping `HTTP 401` into the chat.
 

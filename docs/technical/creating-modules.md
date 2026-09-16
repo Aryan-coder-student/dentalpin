@@ -671,8 +671,9 @@ staying flat:
 
 Modules outside those five clusters (e.g. community integrations such
 as telephony or treatment-consumable mappings) keep their entry flat
-(no `section` key), and the two desktop-level entries — dashboard and
-settings (host) — never carry one.
+(no `section` key). The top-level entries — dashboard and settings
+(host) and the agenda's Schedule entry — never carry one either: they
+stay flat above the sections.
 
 ### Canonical slots (v1)
 
