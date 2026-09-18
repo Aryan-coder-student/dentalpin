@@ -40,17 +40,18 @@ class CopilotModule(BaseModule):
         },
         "frontend": {
             "layer_path": "frontend",
-            "navigation": [
-                {
-                    "label": "nav.copilot",
-                    "icon": "i-lucide-sparkles",
-                    "to": "/copilot",
-                    "permission": "copilot.chat",
-                    "order": 90,
-                },
-            ],
+            "navigation": [],  # launched via the floating button (app.overlays), not the sidebar
         },
     }
+
+    def on_activate(self) -> None:
+        # Re-attach built-in providers on every boot while copilot is
+        # installed. In-memory registrations belong here per ADR 0020.
+        from app.core.llm.factory import ANTHROPIC_SPEC, OPENAI_SPEC
+        from app.core.llm.registry import llm_provider_registry
+
+        llm_provider_registry.register(OPENAI_SPEC)
+        llm_provider_registry.register(ANTHROPIC_SPEC)
 
     def get_models(self) -> list:
         return [CopilotConversation, CopilotMessage, CopilotNudge, CopilotSettings]
